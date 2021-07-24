@@ -8,6 +8,10 @@ import numpy as np
 from imutils import face_utils
 import anonhelper
 
+#configuration variables
+UPSAMPLE = 1
+PROCESS_WIDTH = 1200
+
 # construct the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('-i', '--image', type=str, required=True, help='path to input the image')
@@ -28,7 +32,7 @@ if args['width'] == 0:
     image_width = image.shape[0]
 else:
     image_width = args['width']
-image = imutils.resize(image, 1200)
+image = imutils.resize(image, PROCESS_WIDTH)
 rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # prepare the model for facial marks
@@ -51,8 +55,7 @@ else:
     detector = dlib.cnn_face_detection_model_v1(args["model"])
     # perform the face detection
     # you can tweak upsample value if there are no faces recognized
-    upsample = 1
-    results = detector(rgb, upsample)
+    results = detector(rgb, UPSAMPLE)
     faces = [anonhelper.convert_and_trim_bb(image, r.rect) for r in results]
     print(f"[INFO] found {len(faces)} faces")
     # add the filters
@@ -98,7 +101,7 @@ else:
 # return the image if they recognize any image
 # check if the output is different
 # difference = np.subtract(image, imutils.resize(cv2.imread(args['image']), width=args['width']))
-difference = np.subtract(image, imutils.resize(cv2.imread(args['image']), width=1200))
+difference = np.subtract(image, imutils.resize(cv2.imread(args['image']), width=PROCESS_WIDTH))
 if sum(difference.flatten()) == 0:
     print('0 Faces not founded')
 else:

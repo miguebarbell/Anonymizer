@@ -5,6 +5,9 @@
 
 This is a command line script with the capability of apply a filter to the faces in a picture.
 Automatically deliver the image with the time when was processed.
+The script convert the image to a 1200 width pixels, so can compute in a better way and don't crash your resources. 
+So if you need the picture bigger than that, consider will be resized from that, but you can change this value in the script
+in the parameter PROCESS_WIDTH.
 
 
 ####Libraries:
@@ -27,11 +30,7 @@ Automatically deliver the image with the time when was processed.
 
 `add a label in a rectangle at the top-left corner of the output image.`
 
--u or --upsample -> Integer (default=1)
-
-`upsample the image, preprosses the image for better adquisition of a face, tune it if some faces aren't located.`
-
--w or --width -> Integer (default=600)
+-w or --width -> Integer (default=the same width than the original)
 
 `the width of the output image in pixels, the ratio is conserved.`
 
