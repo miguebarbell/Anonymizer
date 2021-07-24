@@ -8,9 +8,6 @@ import numpy as np
 from imutils import face_utils
 import anonhelper
 
-# TODO: documentar mejor
-# todo hacer un interactive shell que identifique a las personas y les ponga un labeling
-# todo que pregunte cuales quiere aplicar el filtro
 # construct the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('-i', '--image', type=str, required=True, help='path to input the image')
