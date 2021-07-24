@@ -1,8 +1,9 @@
 import cv2
 from datetime import datetime
+import imutils
 
 
-def show_and_save(image, title="Output", save=True, time=0):
+def show_and_save(image, title="Output", save=True, time=0, width=False):
     """
     Show and save an image.
     Parameters
@@ -23,6 +24,8 @@ def show_and_save(image, title="Output", save=True, time=0):
     cv2.imshow(title, image)
     if save:
         file = f"{title}-{datetime.now().strftime('%y-%m-%d %H:%M:%S')}"
+        if width != False:
+            imutils.resize(image, width)
         cv2.imwrite(f"{file}.jpg", image)
         print(f"[INFO] image saved as: {file}.jpg")
     cv2.waitKey(time)

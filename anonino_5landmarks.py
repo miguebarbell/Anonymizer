@@ -13,19 +13,22 @@ ap = argparse.ArgumentParser()
 ap.add_argument('-i', '--image', type=str, required=True, help='path to input the image')
 ap.add_argument('-m', '--model', type=str, default='models/mmod_human_face_detector.dat',
                 help="path to dlib pre-trained model")
-ap.add_argument('-l', '--label', type=str, default=0,
+ap.add_argument('-l', '--label', type=str, default=None,
                 help='add a label/location to your image in a black rectangle top-left corner')
 ap.add_argument("-f", "--filtermask", type=int, default=0,
                 help="select the types of mask to apply: 0= black box, 1= blurry, 2= big pixels, 3=only eyes")
-ap.add_argument("-u", "--upsample", type=int, default=1,
-                help="# of times to upsample, the bigger more accurate and slow")
-ap.add_argument("-w", "--width", type=int, default=600, help="select the width of the output image")
+ap.add_argument("-w", "--width", type=int, default=0, help="select the width of the output image")
 
 args = vars(ap.parse_args())
 
 # load image
 image = cv2.imread(args["image"])
-image = imutils.resize(image, width=args["width"])
+# image = imutils.resize(image, width=args["width"])
+if args['width'] == 0:
+    image_width = image.shape[0]
+else:
+    image_width = args['width']
+image = imutils.resize(image, 1200)
 rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # prepare the model for facial marks
@@ -47,7 +50,9 @@ else:
     print("[INFO] loading CNN face detector...")
     detector = dlib.cnn_face_detection_model_v1(args["model"])
     # perform the face detection
-    results = detector(rgb, args["upsample"])
+    # you can tweak upsample value if there are no faces recognized
+    upsample = 1
+    results = detector(rgb, upsample)
     faces = [anonhelper.convert_and_trim_bb(image, r.rect) for r in results]
     print(f"[INFO] found {len(faces)} faces")
     # add the filters
@@ -92,16 +97,17 @@ else:
 
 # return the image if they recognize any image
 # check if the output is different
-difference = np.subtract(image, imutils.resize(cv2.imread(args['image']), width=args['width']))
+# difference = np.subtract(image, imutils.resize(cv2.imread(args['image']), width=args['width']))
+difference = np.subtract(image, imutils.resize(cv2.imread(args['image']), width=1200))
 if sum(difference.flatten()) == 0:
     print('0 Faces not founded')
 else:
-    if args['label'] != 0:
+    if args['label'] != None:
         print(f"[INFO] adding {args['label'].upper()} to image")
         cv2.rectangle(image, (0, 0), (len(args['label']*9), 17), (255, 255, 255), -1)
         cv2.putText(image, args['label'].upper(), (0, 15),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 2)
-    anonhelper.show_and_save(image, title="Anonymized", save=True)
+    anonhelper.show_and_save(image, title="Anonymized", save=True, width=image_width)
 
 
 
