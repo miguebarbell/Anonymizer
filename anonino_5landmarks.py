@@ -11,7 +11,7 @@ import anonhelper
 # construct the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('-i', '--image', type=str, required=True, help='path to input the image')
-ap.add_argument('-m', '--model', type=str, default='../../commonfiles/mmod_human_face_detector.dat',
+ap.add_argument('-m', '--model', type=str, default='models/mmod_human_face_detector.dat',
                 help="path to dlib pre-trained model")
 ap.add_argument('-l', '--label', type=str, default=0,
                 help='add a label/location to your image in a black rectangle top-left corner')
@@ -31,7 +31,8 @@ rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 # prepare the model for facial marks
 if args["filtermask"] == 3:
     landmark_detector = dlib.get_frontal_face_detector()
-    landmark_predictor = dlib.shape_predictor('../../commonfiles/shape_predictor_5_face_landmarks.dat')
+    print("[INFO] loading CNN face detector...")
+    landmark_predictor = dlib.shape_predictor('models/shape_predictor_5_face_landmarks.dat')
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     faces = landmark_detector(gray, 1)
     print(f"[INFO] found {len(faces)} face for landmarks.")
@@ -52,7 +53,6 @@ else:
     # add the filters
     face_num = 1
     for (startX, startY, w, h) in faces:
-        # todo: make a function that return the face blurred
         endX = startX + w
         endY = startY + h
         # show the face detected
